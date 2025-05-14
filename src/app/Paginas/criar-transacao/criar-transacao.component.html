@@ -1,1 +1,42 @@
-<p>criar-transacao works!</p>
+<div class="container">
+  <app-sidebar></app-sidebar>
+
+  <div class="content">
+    <app-header [title]="'Criar transação'"></app-header>
+
+    <div class="formulario">
+      <label>Origem</label>
+      <input [(ngModel)]="origem" type="text" />
+
+      <label>Destino</label>
+      <input [(ngModel)]="destino" type="text" />
+
+      <label>Taxa</label>
+      <div class="taxas">
+        <label>
+          <input type="radio" [(ngModel)]="taxa" value="automatica" />
+          Automática (recomendada)
+        </label>
+        <label>
+          <input type="radio" [(ngModel)]="taxa" value="baixa" />
+          Baixa (econômica)
+        </label>
+        <label>
+          <input type="radio" [(ngModel)]="taxa" value="media" />
+          Média (balanceada)
+        </label>
+      </div>
+
+      <label>Tamanho estimado da transação</label>
+      <input [(ngModel)]="tamanho" type="number" />
+
+      <label>Valor total da taxa calculada</label>
+      <input type="text" [value]="taxaCalculada" readonly />
+
+      <div class="botoes">
+        <button class="btn-cancelar" (click)="cancelar()">Cancelar</button>
+        <button class="btn-enviar" (click)="enviar()">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>

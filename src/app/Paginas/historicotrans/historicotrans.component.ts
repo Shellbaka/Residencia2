@@ -7,10 +7,13 @@ import { HeaderComponent } from '../../Componentes/header/header.component';
   selector: 'app-historico',
   standalone: true,
   imports: [CommonModule, SidebarComponent, HeaderComponent],
-  templateUrl: './historico.component.html',
-  styleUrls: ['./historico.component.css']
+  templateUrl: './historicotrans.component.html',
+  styleUrls: ['./historicotrans.component.css']
 })
 export class HistoricoComponent {
+  onSidebarSelected(event: any) {
+    console.log('Sidebar selecionada:', event);
+  }
   transacoes = [
     { data: '17/04/2024 15:20', endereco: 'bdecb4a30....51520c', valor: '0,50000000 BTC', status: 'Confirmada' },
     { data: '17/04/2024 09:37', endereco: 'bc1ap19mk....9p5ymk', valor: '1,20000000 BTC', status: 'Confirmada' },
@@ -19,3 +22,4 @@ export class HistoricoComponent {
     { data: '14/04/2024 08:00', endereco: 'bc1ch4p4zp....vyxfg7', valor: '2,00000000 BTC', status: 'Falhou' },
   ];
 }
+

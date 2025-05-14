@@ -1,0 +1,31 @@
+<div class="utxos-container">
+  <div class="utxos-header">
+    <h2>UTXOs</h2>
+    <button class="export-button">Exportar</button>
+  </div>
+
+  <div class="search-container">
+    <input type="text" placeholder="🔍 Pesquisar..." [(ngModel)]="searchTerm" />
+  </div>
+
+  <table class="utxos-table">
+    <thead>
+      <tr>
+        <th>Transação</th>
+        <th>Índice</th>
+        <th>Valor</th>
+        <th>Endereço</th>
+        <th>Script</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let utxo of filteredUtxos()">
+        <td>{{ utxo.transacao }}</td>
+        <td>{{ utxo.indice }}</td>
+        <td>{{ utxo.valor }}</td>
+        <td>{{ utxo.endereco }}</td>
+        <td>{{ utxo.script }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

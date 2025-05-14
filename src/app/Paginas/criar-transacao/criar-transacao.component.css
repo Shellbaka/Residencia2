@@ -1,0 +1,70 @@
+.container {
+  display: flex;
+  height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #fff;
+}
+
+.formulario {
+  max-width: 600px;
+  margin-top: 2rem;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-top: 1.2rem;
+  color: #1c1c1c;
+}
+
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-top: 0.4rem;
+}
+
+.taxas {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.taxas label {
+  font-weight: normal;
+}
+
+.botoes {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.btn-cancelar,
+.btn-enviar {
+  padding: 0.6rem 2rem;
+  font-weight: bold;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+
+.btn-cancelar {
+  background-color: #e0e0e0;
+  color: #1c1c1c;
+}
+
+.btn-enviar {
+  background-color: #2d3f85;
+  color: #fff;
+}

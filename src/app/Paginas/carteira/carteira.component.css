@@ -1,0 +1,76 @@
+.pagina {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.conteudo-principal {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.carteiras-container {
+  padding: 20px 40px;
+  background-color: white;
+  flex: 1;
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.top-bar h1 {
+  font-family: monospace;
+  font-size: 2rem;
+  color: #002B7F;
+}
+
+.criar-btn {
+  background-color: #FFD400;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.lista-carteiras {
+  display: grid;
+  gap: 20px;
+}
+
+.card-carteira {
+  border: 1.5px solid #E0E0E0;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: #FDFDFD;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 500px;
+}
+
+.cabecalho {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  color: #1C1C1C;
+}
+
+.botoes {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-azul {
+  background-color: #002B7F;
+  color: white;
+  border: none;
+  padding: 6px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}

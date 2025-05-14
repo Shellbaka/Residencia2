@@ -1,1 +1,28 @@
-<p>carteira works!</p>
+<div class="pagina">
+  <app-sidebar></app-sidebar>
+
+  <div class="conteudo-principal">
+    <app-header></app-header>
+
+    <div class="carteiras-container">
+      <div class="top-bar">
+        <h1>Carteiras</h1>
+        <button class="criar-btn">Criar nova carteira</button>
+      </div>
+
+      <div class="lista-carteiras">
+        <div class="card-carteira" *ngFor="let carteira of carteiras">
+          <div class="cabecalho">
+            <span class="nome">{{ carteira.nome }}</span>
+            <span class="saldo">{{ carteira.saldo }}</span>
+          </div>
+          <div class="botoes">
+            <button class="btn-azul">Abrir</button>
+            <button class="btn-azul">Importar</button>
+            <button class="btn-azul">Exportar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
