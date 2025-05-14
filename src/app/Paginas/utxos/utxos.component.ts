@@ -2,11 +2,12 @@ import { Component } from '@angular/core';
 import { SidebarComponent } from '../../Componentes/sidebar/sidebar.component';
 import { HeaderComponent } from '../../Componentes/header/header.component';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-utxos',
   standalone: true,
-  imports: [CommonModule, SidebarComponent, HeaderComponent],
+  imports: [CommonModule, SidebarComponent, HeaderComponent, FormsModule],
   templateUrl: './utxos.component.html',
   styleUrls: ['./utxos.component.css']
 })

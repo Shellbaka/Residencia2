@@ -1,0 +1,23 @@
+<app-header></app-header>
+
+<div class="criar-carteira-container">
+  <button class="voltar" (click)="voltar()">
+    ←
+  </button>
+
+  <div class="form-box">
+    <h2>Criar nova carteira</h2>
+
+    <div class="form-group">
+      <label for="nomeCarteira">Nome da carteira</label>
+      <input id="nomeCarteira" type="text" [(ngModel)]="nomeCarteira" placeholder="Carteira X" />
+    </div>
+
+    <div class="form-group">
+      <label for="saldoInicial">Saldo inicial</label>
+      <input id="saldoInicial" type="text" [(ngModel)]="saldoInicial" placeholder="0,00000000 BTC" />
+    </div>
+
+    <button class="criar-btn" (click)="criarCarteira()">Criar carteira</button>
+  </div>
+</div>

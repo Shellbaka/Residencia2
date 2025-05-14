@@ -1,0 +1,66 @@
+.criar-carteira-container {
+  padding: 20px;
+  background-color: white;
+  height: 100%;
+  position: relative;
+}
+
+.voltar {
+  font-size: 28px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 10px;
+  color: #002f8d;
+}
+
+.form-box {
+  background-color: #eaf1f9;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.form-box h2 {
+  background-color: #002f8d;
+  color: white;
+  padding: 12px;
+  border-radius: 8px 8px 0 0;
+  font-family: monospace;
+  font-size: 20px;
+  margin-top: -30px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+}
+
+label {
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: #001f5c;
+}
+
+input {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.criar-btn {
+  background-color: #002f8d;
+  color: white;
+  padding: 10px;
+  width: 100%;
+  font-weight: bold;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+}
