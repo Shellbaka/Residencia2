@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-utxos',
+  standalone: true,
   imports: [CommonModule, SidebarComponent, HeaderComponent],
   templateUrl: './utxos.component.html',
   styleUrls: ['./utxos.component.css']

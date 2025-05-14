@@ -4,11 +4,13 @@ import { HistoricoComponent } from './Paginas/historicotrans/historicotrans.comp
 import { CriarTransacaoComponent } from './Paginas/criar-transacao/criar-transacao.component';
 import { CarteiraComponent } from './Paginas/carteira/carteira.component';
 import { UtxosComponent } from './Paginas/utxos/utxos.component';
+import { ConfiguracaoComponent } from './Paginas/configuracao/configuracao.component';
 
 export const routes: Routes = [
   { path: '', component: PainelComponent },
   { path: 'historico', component: HistoricoComponent },
   { path: 'criar-transacao', component: CriarTransacaoComponent },
   { path: 'carteira' , component: CarteiraComponent },
-  {path : 'utxos', component: UtxosComponent}
+  {path : 'utxos', component: UtxosComponent},
+   {path : 'configuracoes', component: ConfiguracaoComponent}
 ];
