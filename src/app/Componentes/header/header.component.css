@@ -1,0 +1,17 @@
+.header {
+    display: flex;
+    align-items: center;
+    background-color: #ffce00;
+    padding: 1rem;
+  }
+  
+  .logo {
+    height: 30px;
+    margin-left: 1rem;
+  }
+  
+  .menu-icon {
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  

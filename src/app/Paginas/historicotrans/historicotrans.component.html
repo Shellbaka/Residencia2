@@ -1,0 +1,35 @@
+<div class="container">
+    <app-sidebar (selected)=""></app-sidebar>
+  
+    <div class="content">
+      <app-header [title]="'Histórico de transações'"></app-header>
+  
+      <div class="exportar">
+        <button class="btn-exportar">Exportar</button>
+      </div>
+  
+      <table>
+        <thead>
+          <tr>
+            <th>Data e hora</th>
+            <th>Endereço</th>
+            <th>Valor</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of transacoes">
+            <td>{{ t.data }}</td>
+            <td>{{ t.endereco }}</td>
+            <td>{{ t.valor }}</td>
+            <td>
+              <span [class]="t.status === 'Confirmada' ? 'status confirmada' : 'status falhou'">
+                {{ t.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  

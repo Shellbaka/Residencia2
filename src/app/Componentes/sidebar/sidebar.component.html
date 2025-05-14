@@ -1,1 +1,12 @@
-<p>sidebar works!</p>
+<div class="sidebar">
+    <ul>
+      <li *ngFor="let item of menu" (click)="selectItem(item)">
+        {{ item }}
+      </li>
+    </ul>
+    <div class="bottom-icons">
+      <span>👤</span>
+      <span>🔗</span>
+    </div>
+  </div>
+  

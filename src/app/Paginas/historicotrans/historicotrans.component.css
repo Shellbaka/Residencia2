@@ -1,0 +1,64 @@
+.container {
+    display: flex;
+    height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .content {
+    flex: 1;
+    background-color: #fff;
+    padding: 2rem;
+  }
+  
+  .exportar {
+    display: flex;
+    justify-content: flex-end;
+    margin: 1rem 0;
+  }
+  
+  .btn-exportar {
+    background-color: #ffde17;
+    border: none;
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    border-radius: 6px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    cursor: pointer;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+  }
+  
+  th {
+    text-align: left;
+    padding: 0.8rem;
+    color: #1c1c1c;
+    border-bottom: 2px solid #1c1c1c;
+  }
+  
+  td {
+    padding: 0.8rem;
+    border-bottom: 1px solid #ccc;
+    color: #1c1c1c;
+  }
+  
+  .status {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 0.9rem;
+  }
+  
+  .confirmada {
+    background-color: #d0d9f7;
+    color: #2d3f85;
+  }
+  
+  .falhou {
+    background-color: #fff0a4;
+    color: #b67c00;
+  }
+  

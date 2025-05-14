@@ -1,0 +1,33 @@
+.sidebar {
+    width: 200px;
+    background: #002f6c;
+    color: white;
+    padding: 1rem;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  li {
+    padding: 0.7rem;
+    cursor: pointer;
+  }
+  
+  li:hover {
+    background: #004b99;
+  }
+  
+  .bottom-icons {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 2rem;
+    font-size: 1.2rem;
+  }
+  

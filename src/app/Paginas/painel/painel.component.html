@@ -1,0 +1,40 @@
+<div class="container">
+    <app-sidebar (selected)="onMenuChange($event)" />
+    <div class="main">
+      <app-header [title]="selectedSection" />
+  
+      <div class="content">
+        <h2 class="section-title">Painel</h2>
+  
+        <div class="cards">
+          <div class="card">
+            <div class="card-header">Saldo <span>💼</span></div>
+            <div class="card-body">10</div>
+          </div>
+  
+          <div class="card">
+            <div class="card-header">Número de transações</div>
+            <div class="card-body">5</div>
+          </div>
+        </div>
+  
+        <h2 class="section-title">Carteiras</h2>
+  
+        <table class="wallet-table">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Endereço</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Carteira 1</td>
+              <td>bdecb4a3 15d6c70 d0e8d8d2 5152oc</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
