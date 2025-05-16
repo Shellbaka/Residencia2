@@ -1,0 +1,13 @@
+<app-header></app-header>
+<div class="container">
+  <h2>{{ nomeCarteira }}</h2>
+  <p class="saldo">{{ saldo.toFixed(8) }} BTC</p>
+  
+  <div class="info-box">
+    <label>Endereço</label>
+    <input type="text" [value]="endereco" readonly>
+
+    <label>Chave privada</label>
+    <input type="text" [value]="chavePrivada" readonly>
+  </div>
+</div>

@@ -1,0 +1,40 @@
+.container {
+  text-align: center;
+  margin-top: 60px;
+}
+
+h2 {
+  font-size: 24px;
+  background-color: #0a3d91;
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.saldo {
+  font-size: 20px;
+  margin: 20px 0;
+  font-weight: bold;
+}
+
+.info-box {
+  display: inline-block;
+  background-color: #e9eef6;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+label {
+  display: block;
+  margin: 10px 0 5px;
+  font-weight: bold;
+}
+
+input {
+  width: 320px;
+  padding: 8px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+}

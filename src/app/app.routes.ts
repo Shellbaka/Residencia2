@@ -8,6 +8,9 @@ import { ConfiguracaoComponent } from './Paginas/configuracao/configuracao.compo
 import { CriarCarteiraComponent } from './Paginas/criar-carteira/criar-carteira.component';
 import { ExportarTransacoesComponent } from './Paginas/exportar-transacoes/exportar-transacoes.component';
 import { ExportarUtxosComponent } from './Paginas/exportar-utxos/exportar-utxos.component';
+import { ExportarCarteiraComponent } from './Paginas/exportar-carteira/exportar-carteira.component';
+import { ImportarCarteiraComponent } from './Paginas/importar-carteira/importar-carteira.component';
+import { DetalhesCarteiraComponent } from './Paginas/detalhes-carteira/detalhes-carteira.component';
 
 export const routes: Routes = [
   { path: '', component: PainelComponent },
@@ -19,4 +22,7 @@ export const routes: Routes = [
   {path : 'criar-carteira', component: CriarCarteiraComponent},
   {path : 'exportar-transacoes', component: ExportarTransacoesComponent},
   {path : 'exportar-utxos', component: ExportarUtxosComponent},
+  {path : 'exportar-carteira', component: ExportarCarteiraComponent},
+  {path : 'importar-carteira', component: ImportarCarteiraComponent},
+  {path : 'detalhes-carteira', component: DetalhesCarteiraComponent}
 ];

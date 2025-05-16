@@ -1,0 +1,23 @@
+.container {
+  text-align: center;
+  margin-top: 80px;
+}
+
+input {
+  width: 350px;
+  padding: 10px;
+  margin: 20px 0;
+  font-size: 14px;
+  background-color: #f3f3f3;
+  border: 1px solid #ccc;
+}
+
+button {
+  background-color: #0a3d91;
+  color: white;
+  padding: 10px 30px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
