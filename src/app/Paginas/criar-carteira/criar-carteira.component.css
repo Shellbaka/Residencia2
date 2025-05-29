@@ -46,7 +46,7 @@ label {
   color: #001f5c;
 }
 
-input {
+input, select {
   padding: 8px 12px;
   font-size: 14px;
   border-radius: 8px;
@@ -63,4 +63,8 @@ input {
   border-radius: 12px;
   cursor: pointer;
   font-size: 16px;
+}
+
+.criar-btn:hover {
+  background-color: #001f5c;
 }

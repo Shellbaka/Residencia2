@@ -14,38 +14,49 @@ import { FormsModule } from '@angular/forms';
 })
 export class ExportarCarteiraComponent {
   chaveExportada: string = ''; 
+  outputPath: string = ''; 
   method: string = 'entropy';
-network: string = 'testnet';
-keyFormat: string = 'p2pkh';
-outputPath: string = '';
 
+  privateKey: string = '';
+  publicKey: string = '';
+  address: string = '';
+  network: string = 'testnet';
+  keyFormat: string = 'p2pkh';
+  fileFormat: string = 'txt';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router) {
+    const nav = this.router.getCurrentNavigation();
+    if (nav?.extras.state && nav.extras.state['walletData']) {
+      const walletData = nav.extras.state['walletData'];
+      this.privateKey = walletData.private_key;
+      this.publicKey = walletData.public_key;
+      this.address = walletData.address;
+      this.network = walletData.network || this.network;
+      this.keyFormat = walletData.key_format || this.keyFormat;
+    } else {
+      alert('Nenhuma carteira disponível para exportar. Volte e crie uma carteira primeiro.');
+      this.router.navigate(['/criar-carteira']);
+    }
+  }
 
   exportarChave() {
     const payload = {
-      tipo: 'exportar',
-      formato: 'txt'
+      private_key: this.privateKey,
+      public_key: this.publicKey,
+      address: this.address,
+      network: this.network,
+      format: this.keyFormat,
+      file_format: this.fileFormat
     };
 
-    this.http.post<any>('http://127.0.0.1:8000/api/keys/export', payload, { observe: 'response' })
+    this.http.post<any>('http://127.0.0.1:8000/api/keys/export-file', payload, { observe: 'response' })
       .subscribe({
         next: (response) => {
-          if (response.status === 200) {
-            const chave = response.body?.chave || 'Chave não informada.';
-            this.chaveExportada = chave;
+          if (response.status === 200 && response.body?.file_path) {
+            alert(`Chaves exportadas com sucesso!\nArquivo salvo em: ${response.body.file_path}`);
 
-            const blob = new Blob([chave], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'chave_exportada.txt';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
 
-            alert('Exportação bem-sucedida! O arquivo foi salvo.');
+            this.chaveExportada = `Arquivo salvo em: ${response.body.file_path}`;
           } else {
             alert(`Exportação concluída com status ${response.status}.`);
           }
