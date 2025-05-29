@@ -1,6 +1,37 @@
 <app-header></app-header>
 <div class="container">
-  <h2>Exportar</h2>
-  <input type="text" [value]="chaveExportada" readonly>
-  <button (click)="copiarChave()">Copiar</button>
+  <h2>Exportar Carteira</h2>
+
+  <label>Método:</label>
+  <select [(ngModel)]="method">
+    <option value="entropy">Entropy</option>
+    <option value="bip39">BIP39</option>
+    <option value="bip32">BIP32</option>
+  </select>
+
+  <label>Rede:</label>
+  <select [(ngModel)]="network">
+    <option value="testnet">Testnet</option>
+    <option value="mainnet">Mainnet</option>
+  </select>
+
+  <label>Formato da Chave:</label>
+  <select [(ngModel)]="keyFormat">
+    <option value="p2pkh">P2PKH</option>
+    <option value="p2sh">P2SH</option>
+    <option value="p2wpkh">P2WPKH</option>
+    <option value="p2tr">P2TR</option>
+  </select>
+
+  <label>Nome do Arquivo de Exportação:</label>
+  <input type="text" [(ngModel)]="outputPath" placeholder="backup_carteira.txt">
+
+  <button (click)="exportarChave()">Exportar</button>
+  <button (click)="voltar()">Voltar</button>
+
+  <div *ngIf="chaveExportada">
+    <h3>Chave Exportada</h3>
+    <input type="text" [value]="chaveExportada" readonly>
+    <button (click)="copiarChave()">Copiar</button>
+  </div>
 </div>
