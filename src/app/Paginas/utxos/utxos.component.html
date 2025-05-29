@@ -1,33 +1,54 @@
 <app-header></app-header>
 <app-sidebar></app-sidebar>
+
 <div class="utxos-container">
   <div class="utxos-header">
     <h2>UTXOs</h2>
     <button class="export-button">Exportar</button>
   </div>
 
-  <div class="search-container">
-    <input type="text" placeholder="🔍 Pesquisar..." [(ngModel)]="searchTerm" />
+  <div class="address-input">
+    <input type="text" placeholder="Digite o endereço Bitcoin" [(ngModel)]="address" />
+    <button (click)="consultarUTXOs()">Consultar</button>
   </div>
 
-  <table class="utxos-table">
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+  <div *ngIf="balance !== null" class="balance-info">
+    <strong>Saldo Total:</strong> {{ balance | number }} satoshis
+  </div>
+
+  <div class="search-container" *ngIf="utxos.length > 0">
+    <input type="text" placeholder="🔍 Pesquisar UTXOs..." [(ngModel)]="searchTerm" />
+  </div>
+
+  <table class="utxos-table" *ngIf="utxos.length > 0">
     <thead>
       <tr>
         <th>Transação</th>
         <th>Índice</th>
-        <th>Valor</th>
+        <th>Valor (satoshis)</th>
         <th>Endereço</th>
         <th>Script</th>
+        <th>Confirmações</th>
       </tr>
     </thead>
-    <tbody>
-      <tr *ngFor="let utxo of filteredUtxos()">
-        <td>{{ utxo.transacao }}</td>
-        <td>{{ utxo.indice }}</td>
-        <td>{{ utxo.valor }}</td>
-        <td>{{ utxo.endereco }}</td>
-        <td>{{ utxo.script }}</td>
-      </tr>
-    </tbody>
+   <tbody>
+  <tr *ngFor="let utxo of filteredUtxos()">
+    <td>{{ utxo.transacao }}</td>
+    <td>{{ utxo.indice }}</td>
+    <td>{{ utxo.valor }}</td>
+    <td>{{ utxo.address }}</td>
+    <td>{{ utxo.script }}</td>
+    <td>{{ utxo.confirmations }}</td>
+  </tr>
+</tbody>
+
+
+      
   </table>
+
+  <div *ngIf="balance !== null && utxos.length === 0" class="info-message">
+    Nenhum UTXO encontrado para este endereço.
+  </div>
 </div>
