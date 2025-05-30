@@ -1,41 +1,57 @@
-import { SidebarComponent } from '../../Componentes/sidebar/sidebar.component';
-import { HeaderComponent } from '../../Componentes/header/header.component';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { SidebarComponent } from '../../Componentes/sidebar/sidebar.component';
+import { HeaderComponent } from '../../Componentes/header/header.component';
+
+interface UTXO {
+  txid: string;
+  vout: number;
+  value: number; 
+  address: string;
+  confirmations: number;
+  script?: string;
+  selected?: boolean;
+}
 
 @Component({
   selector: 'app-utxos',
-  imports: [CommonModule, HeaderComponent, SidebarComponent, FormsModule],
   standalone: true,
+  imports: [CommonModule, HeaderComponent, SidebarComponent, FormsModule],
   templateUrl: './utxos.component.html',
   styleUrls: ['./utxos.component.css']
 })
 export class UtxosComponent implements OnInit {
   searchTerm: string = '';
-  balance: number = 0;
-  errorMessage: string | null = null; 
-  address: string = '';                
+  balance: number = 0; 
+  errorMessage: string | null = null;
+  address: string = '';
 
-  utxos = [
-    { transacao: 'c47e89c3...', indice: 0, valor: '0,40000000 BTC', address: 'bc1qf2n9f...', confirmations: 10, script: 'OP_HASH10' },
-    { transacao: '839a0a97...', indice: 1, valor: '0,20000000 BTC', address: 'bc1qvz4s4...', confirmations: 5, script: 'OP_EQUAL' },
-    { transacao: '5e738ea4...', indice: 0, valor: '0,05000000 BTC', address: 'bc1qsithk9...', confirmations: 20, script: 'OP_CHECKSIG' },
-    { transacao: '44189f37...', indice: 1, valor: '0,02500000 BTC', address: 'bc1p3umn0...', confirmations: 0, script: 'OP_0' }
-  ];
+  utxos: UTXO[] = [];
+
+  consultaFinalizada: boolean = false;
 
   ngOnInit(): void {
+    this.consultaFinalizada = false;
+    this.carregarUTXOsIniciais();
+  }
+
+  carregarUTXOsIniciais(): void {
+    this.utxos = [
+      { txid: 'c47e89c3...', vout: 0, value: 40000000, address: 'bc1qf2n9f...', confirmations: 10, script: 'OP_HASH10', selected: false },
+      { txid: '839a0a97...', vout: 1, value: 20000000, address: 'bc1qvz4s4...', confirmations: 5, script: 'OP_EQUAL', selected: false },
+      { txid: '5e738ea4...', vout: 0, value: 5000000, address: 'bc1qsithk9...', confirmations: 20, script: 'OP_CHECKSIG', selected: false },
+      { txid: '44189f37...', vout: 1, value: 2500000, address: 'bc1p3umn0...', confirmations: 0, script: 'OP_0', selected: false }
+    ];
     this.calcularBalance();
   }
 
   calcularBalance(): void {
-    this.balance = this.utxos.reduce((total, utxo) => {
-      const numero = parseFloat(utxo.valor.replace(',', '.').split(' ')[0]);
-      return total + (isNaN(numero) ? 0 : numero);
-    }, 0);
+    const totalSatoshis = this.utxos.reduce((total, utxo) => total + utxo.value, 0);
+    this.balance = totalSatoshis / 100000000; 
   }
 
-  filteredUtxos() {
+  filteredUtxos(): UTXO[] {
     if (!this.searchTerm.trim()) return this.utxos;
 
     const termo = this.normalizeText(this.searchTerm);
@@ -57,18 +73,20 @@ export class UtxosComponent implements OnInit {
       this.errorMessage = 'Por favor, insira um endereço válido.';
       this.utxos = [];
       this.balance = 0;
+      this.consultaFinalizada = true;
       return;
     }
 
     if (this.address.toLowerCase() === 'teste') {
       this.utxos = [
         {
-          transacao: 'abc123abc...',
-          indice: 0,
-          valor: '0,10000000 BTC',
+          txid: 'abc123abc...',
+          vout: 0,
+          value: 10000000,
           address: this.address,
           confirmations: 15,
-          script: 'OP_DUP OP_HASH160'
+          script: 'OP_DUP OP_HASH160',
+          selected: false
         }
       ];
       this.errorMessage = null;
@@ -78,5 +96,31 @@ export class UtxosComponent implements OnInit {
     }
 
     this.calcularBalance();
+    this.consultaFinalizada = true;
+  }
+
+  resetarConsulta() {
+    this.address = '';
+    this.searchTerm = '';
+    this.errorMessage = null;
+    this.consultaFinalizada = false;
+    this.carregarUTXOsIniciais();
+  }
+
+  exportarUTXOs() {
+    const dados = JSON.stringify(this.utxos, null, 2);
+    const blob = new Blob([dados], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'utxos.json';
+    a.click();
+
+    URL.revokeObjectURL(url);
+  }
+
+  getSelectedUTXOs(): UTXO[] {
+    return this.utxos.filter(u => u.selected);
   }
 }

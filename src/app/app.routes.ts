@@ -11,6 +11,7 @@ import { ExportarUtxosComponent } from './Paginas/exportar-utxos/exportar-utxos.
 import { ExportarCarteiraComponent } from './Paginas/exportar-carteira/exportar-carteira.component';
 import { ImportarCarteiraComponent } from './Paginas/importar-carteira/importar-carteira.component';
 import { DetalhesCarteiraComponent } from './Paginas/detalhes-carteira/detalhes-carteira.component';
+import {TransmitirComponent } from './Paginas/transmitir/transmitir.component';
 
 export const routes: Routes = [
   { path: '', component: PainelComponent },
@@ -24,5 +25,6 @@ export const routes: Routes = [
   {path : 'exportar-utxos', component: ExportarUtxosComponent},
   {path : 'exportar-carteira', component: ExportarCarteiraComponent},
   {path : 'importar-carteira', component: ImportarCarteiraComponent},
-  {path : 'detalhes-carteira', component: DetalhesCarteiraComponent}
+  {path : 'detalhes-carteira', component: DetalhesCarteiraComponent},
+  {path : 'transmitir', component: TransmitirComponent}
 ];
