@@ -1,28 +1,42 @@
-<div class="pagina">
-  <app-sidebar></app-sidebar>
-
-  <div class="conteudo-principal">
-    <app-header></app-header>
+<app-header [title]="'Carteiras'"></app-header>
+<app-sidebar></app-sidebar>
 
     <div class="carteiras-container">
       <div class="top-bar">
         <h1>Carteiras</h1>
-        <button class="criar-btn">Criar nova carteira</button>
+        <a [routerLink]="['/criar-carteira']" class="criar-btn">Criar nova carteira</a>
       </div>
 
-      <div class="lista-carteiras">
-        <div class="card-carteira" *ngFor="let carteira of carteiras">
-          <div class="cabecalho">
-            <span class="nome">{{ carteira.nome }}</span>
-            <span class="saldo">{{ carteira.saldo }}</span>
-          </div>
-          <div class="botoes">
-            <button class="btn-azul">Abrir</button>
-            <button class="btn-azul">Importar</button>
-            <button class="btn-azul">Exportar</button>
+
+      <div class="secao-carteiras">
+        <h2>Carteiras Salvas Localmente</h2>
+
+        <div *ngIf="loading" class="loading-container">
+          <div class="loader"></div>
+          <p>Carregando carteiras locais...</p>
+        </div>
+
+        <div *ngIf="error && !loading" class="error-message">
+          <p>{{ error }}</p>
+        </div>
+
+        <div *ngIf="!loading && !error && carteirasLocais.length === 0" class="empty-message">
+          <p>Nenhuma carteira salva localmente. Utilize a opção "Criar nova carteira" para adicionar uma carteira.</p>
+        </div>
+
+        <div *ngIf="carteirasLocais.length > 0" class="lista-carteiras">
+          <div class="card-carteira" *ngFor="let carteira of carteirasLocais">
+            <div class="cabecalho">
+              <span class="nome">{{ carteira.name }}</span>
+              <span class="endereco">{{ carteira.address | slice:0:12 }}...</span>
+              <span class="formato">{{ carteira.format }} ({{ carteira.network }})</span>
+            </div>
+            <div class="botoes">
+              <a [routerLink]="['/detalhes-carteira']" [queryParams]="{address: carteira.address}" class="btn-azul">Detalhes</a>
+              <a [routerLink]="['/exportar-carteira']" [queryParams]="{address: carteira.address}" class="btn-azul">Exportar</a>
+              <button class="btn-vermelho" (click)="removerCarteira(carteira.address)">Remover</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>

@@ -1,4 +1,5 @@
-<app-header></app-header>
+<app-header [title]="'Criar Carteira'"></app-header>
+<app-sidebar></app-sidebar>
 
 <div class="criar-carteira-container">
   <button class="voltar" (click)="voltar()">←</button>
@@ -11,10 +12,6 @@
       <input id="nomeCarteira" type="text" [(ngModel)]="nomeCarteira" placeholder="Carteira X" />
     </div>
 
-    <div class="form-group">
-      <label for="saldoInicial">Saldo inicial</label>
-      <input id="saldoInicial" type="text" [(ngModel)]="saldoInicial" placeholder="0,00000000 BTC" />
-    </div>
 
     <div class="form-group">
       <label for="method">Método de geração</label>

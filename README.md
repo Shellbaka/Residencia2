@@ -1,6 +1,8 @@
-# ResidenciaBB
+# Bitcoin Wallet Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.10.
+Interface de usuário para a carteira Bitcoin, desenvolvida com Angular. Este frontend se integra com a API local Bitcoin Wallet para oferecer uma experiência completa de gerenciamento de carteiras Bitcoin.
+
+Este projeto foi gerado usando [Angular CLI](https://github.com/angular/angular-cli) versão 19.2.10.
 
 ## Development server
 
@@ -54,6 +56,45 @@ ng e2e
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
-## Additional Resources
+## Funcionalidades
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### Carteiras Bitcoin
+- Criação de novas carteiras (suporte a vários formatos)
+- Listagem de carteiras armazenadas localmente
+- Visualização detalhada de carteiras
+- Armazenamento local com SQLite via API backend
+
+### Transações
+- Criação de transações
+- Visualização de histórico
+- Acompanhamento de UTXOs
+
+### Importação e Exportação
+- Exportação de carteiras
+- Importação de carteiras existentes
+
+## Integração com Backend
+
+Este frontend se integra com a API local Bitcoin Wallet Core, que deve estar rodando em `http://localhost:8000`. Para o funcionamento completo, certifique-se de que o backend está em execução.
+
+### Iniciar o Backend
+
+```bash
+cd /caminho/para/Bitcoin-Wallet
+python -m app.main
+```
+
+### Armazenamento Local SQLite
+
+O frontend agora suporta armazenamento local de carteiras usando SQLite através da API backend. Isso permite:
+
+- Persistência de dados das carteiras
+- Armazenamento seguro de chaves públicas e informações de endereços
+- Histórico de transações
+- Rastreamento de UTXOs
+
+Todas essas informações são armazenadas localmente na máquina do usuário em um banco de dados SQLite gerenciado pelo backend.
+
+## Recursos Adicionais
+
+Para mais informações sobre o uso do Angular CLI, incluindo referências detalhadas de comandos, visite a página [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli).

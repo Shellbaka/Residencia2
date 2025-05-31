@@ -1,14 +1,40 @@
-.container {
-    display: flex;
-    height: 100vh;
-    font-family: 'Segoe UI', sans-serif;
-  }
-  
-  .content {
-    flex: 1;
-    background-color: #fff;
-    padding: 2rem;
-  }
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  box-sizing: border-box;
+  font-family: Segoe UI, Arial, sans-serif;
+}
+
+/* Deixa o sidebar fixo à esquerda */
+app-sidebar {
+  position: fixed;
+  top: 70px; /* altura do header */
+  left: 0;
+  width: 250px;
+  height: calc(100vh - 70px);
+  z-index: 1000;
+}
+
+/* Header fixo no topo */
+app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 70px;
+  width: 100%;
+  z-index: 1100;
+}
+
+/* Conteúdo principal da tela */
+.content-inner {
+  margin-left: 250px; /* deixa espaço pro sidebar */
+  padding: 100px 40px 40px 40px; /* espaço para o header + padding interno */
+  box-sizing: border-box;
+  background-color: #ffffff;
+  min-height: calc(100vh - 70px);
+  overflow-y: auto;
+}
   
   .exportar {
     display: flex;
@@ -62,3 +88,36 @@
     color: #b67c00;
   }
   
+  .pendente {
+    background-color: #f0f0f0;
+    color: #666666;
+  }
+
+  .tipo {
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.85rem;
+  }
+
+  .enviado {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+
+  .recebido {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  .loading, .error, .empty-state {
+    padding: 2rem;
+    text-align: center;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-top: 2rem;
+  }
+
+  .error {
+    color: #dc3545;
+  }

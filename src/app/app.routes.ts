@@ -19,7 +19,7 @@ export const routes: Routes = [
   { path: 'criar-transacao', component: CriarTransacaoComponent },
   { path: 'carteira' , component: CarteiraComponent },
   {path : 'utxos', component: UtxosComponent},
-   {path : 'configuracoes', component: ConfiguracaoComponent},
+  {path : 'configuracoes', component: ConfiguracaoComponent},
   {path : 'criar-carteira', component: CriarCarteiraComponent},
   {path : 'exportar-transacoes', component: ExportarTransacoesComponent},
   {path : 'exportar-utxos', component: ExportarUtxosComponent},

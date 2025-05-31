@@ -33,17 +33,8 @@ export class UtxosComponent implements OnInit {
 
   ngOnInit(): void {
     this.consultaFinalizada = false;
-    this.carregarUTXOsIniciais();
-  }
-
-  carregarUTXOsIniciais(): void {
-    this.utxos = [
-      { txid: 'c47e89c3...', vout: 0, value: 40000000, address: 'bc1qf2n9f...', confirmations: 10, script: 'OP_HASH10', selected: false },
-      { txid: '839a0a97...', vout: 1, value: 20000000, address: 'bc1qvz4s4...', confirmations: 5, script: 'OP_EQUAL', selected: false },
-      { txid: '5e738ea4...', vout: 0, value: 5000000, address: 'bc1qsithk9...', confirmations: 20, script: 'OP_CHECKSIG', selected: false },
-      { txid: '44189f37...', vout: 1, value: 2500000, address: 'bc1p3umn0...', confirmations: 0, script: 'OP_0', selected: false }
-    ];
-    this.calcularBalance();
+    this.utxos = [];
+    this.balance = 0;
   }
 
   calcularBalance(): void {
@@ -77,26 +68,34 @@ export class UtxosComponent implements OnInit {
       return;
     }
 
-    if (this.address.toLowerCase() === 'teste') {
-      this.utxos = [
-        {
-          txid: 'abc123abc...',
-          vout: 0,
-          value: 10000000,
-          address: this.address,
-          confirmations: 15,
-          script: 'OP_DUP OP_HASH160',
-          selected: false
+    // Consultar os UTXOs via API
+    fetch(`http://localhost:8000/api/wallets/${this.address}/utxos`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Falha ao obter UTXOs');
         }
-      ];
-      this.errorMessage = null;
-    } else {
-      this.utxos = [];
-      this.errorMessage = 'Nenhum UTXO encontrado para este endereço.';
-    }
-
-    this.calcularBalance();
-    this.consultaFinalizada = true;
+        return response.json();
+      })
+      .then(data => {
+        if (data && data.length > 0) {
+          this.utxos = data.map((utxo: any) => ({
+            ...utxo,
+            selected: false
+          }));
+          this.errorMessage = null;
+        } else {
+          this.utxos = [];
+          this.errorMessage = 'Nenhum UTXO encontrado para este endereço.';
+        }
+        this.calcularBalance();
+        this.consultaFinalizada = true;
+      })
+      .catch(error => {
+        console.error('Erro ao consultar UTXOs:', error);
+        this.utxos = [];
+        this.errorMessage = 'Erro ao consultar UTXOs. Verifique se o servidor está rodando.';
+        this.consultaFinalizada = true;
+      });
   }
 
   resetarConsulta() {
@@ -104,7 +103,8 @@ export class UtxosComponent implements OnInit {
     this.searchTerm = '';
     this.errorMessage = null;
     this.consultaFinalizada = false;
-    this.carregarUTXOsIniciais();
+    this.utxos = [];
+    this.balance = 0;
   }
 
   exportarUTXOs() {

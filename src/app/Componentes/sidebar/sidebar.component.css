@@ -21,7 +21,13 @@
   }
   
   li:hover {
-    background: #004b99;
+    background: #0021b3;
+  }
+  
+  li.active {
+    background: #0056b3;
+    border-left: 4px solid gray;
+    font-weight: bold;
   }
   
   .bottom-icons {

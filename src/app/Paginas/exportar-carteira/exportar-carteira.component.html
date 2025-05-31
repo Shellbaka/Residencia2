@@ -1,6 +1,36 @@
-<app-header></app-header>
-<div class="container">
+<app-header [title]="'Exportar Carteira'"></app-header>
+<app-sidebar></app-sidebar>
+
+<div class="content">
   <h2>Exportar Carteira</h2>
+  
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <div class="info-box" *ngIf="hasValidWallet">
+    <h3>Informações da Carteira</h3>
+    
+    <div class="campo-info">
+      <label>Endereço</label>
+      <div class="input-group">
+        <input #enderecoInput type="text" [value]="address" readonly>
+        <button class="btn-copiar" (click)="copiarTexto(enderecoInput)">
+          <i class="bi bi-clipboard"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="campo-info">
+      <label>Chave Pública</label>
+      <div class="input-group">
+        <input #publicKeyInput type="text" [value]="publicKey" readonly>
+        <button class="btn-copiar" (click)="copiarTexto(publicKeyInput)">
+          <i class="bi bi-clipboard"></i>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <label>Método:</label>
   <select [(ngModel)]="method">

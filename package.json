@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --no-ssr",
+    "start:dev": "ng serve",
     "build": "ng build",
+    "build:no-ssr": "ng build --no-ssr",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:residenciaBB": "node dist/residencia-bb/server/server.mjs"

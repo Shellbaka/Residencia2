@@ -1,18 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';  
 import { Router } from '@angular/router';  
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../Componentes/header/header.component';
+import { SidebarComponent } from '../../Componentes/sidebar/sidebar.component';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   standalone: true,
   selector: 'app-exportar-carteira',
-  imports: [CommonModule, HeaderComponent, FormsModule],
+  imports: [CommonModule, HeaderComponent, SidebarComponent, FormsModule],
   templateUrl: './exportar-carteira.component.html',
   styleUrls: ['./exportar-carteira.component.css']
 })
-export class ExportarCarteiraComponent {
+export class ExportarCarteiraComponent implements OnInit {
+  errorMessage: string = '';
+  hasValidWallet: boolean = false;
   chaveExportada: string = ''; 
   outputPath: string = ''; 
   method: string = 'entropy';
@@ -33,8 +36,14 @@ export class ExportarCarteiraComponent {
       this.address = walletData.address;
       this.network = walletData.network || this.network;
       this.keyFormat = walletData.key_format || this.keyFormat;
+      this.hasValidWallet = true;
     } else {
-      alert('Nenhuma carteira disponível para exportar. Volte e crie uma carteira primeiro.');
+      this.errorMessage = 'Nenhuma carteira disponível para exportar. Volte e crie uma carteira primeiro.';
+    }
+  }
+  
+  ngOnInit() {
+    if (!this.hasValidWallet) {
       this.router.navigate(['/criar-carteira']);
     }
   }
@@ -53,28 +62,40 @@ export class ExportarCarteiraComponent {
       .subscribe({
         next: (response) => {
           if (response.status === 200 && response.body?.file_path) {
-            alert(`Chaves exportadas com sucesso!\nArquivo salvo em: ${response.body.file_path}`);
-
-
+            this.errorMessage = '';
             this.chaveExportada = `Arquivo salvo em: ${response.body.file_path}`;
           } else {
-            alert(`Exportação concluída com status ${response.status}.`);
+            this.errorMessage = `Exportação concluída com status ${response.status}.`;
           }
         },
         error: (error) => {
           console.error('Erro ao exportar chave:', error);
           if (error.status === 422) {
-            alert('Erro ao exportar: dados inválidos ou falha na exportação.');
+            this.errorMessage = 'Erro ao exportar: dados inválidos ou falha na exportação.';
           } else {
-            alert('Erro inesperado ao exportar a chave. Tente novamente.');
+            this.errorMessage = 'Erro inesperado ao exportar a chave. Tente novamente.';
           }
         }
       });
   }
 
   copiarChave() {
-    navigator.clipboard.writeText(this.chaveExportada);
-    alert('Chave copiada!');
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(this.chaveExportada);
+      this.errorMessage = 'Chave copiada!';
+    }
+  }
+  
+  /**
+   * Copia o texto de um input para a área de transferência
+   * @param inputElement O elemento input que contém o texto a ser copiado
+   */
+  copiarTexto(inputElement: HTMLInputElement): void {
+    if (inputElement && typeof document !== 'undefined') {
+      inputElement.select();
+      document.execCommand('copy');
+      this.errorMessage = 'Copiado para a área de transferência!';
+    }
   }
 
   voltar() {
