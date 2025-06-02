@@ -29,7 +29,7 @@
     <div class="card-saldo">
       <div class="titulo-saldo">Saldo Atual</div>
       <div *ngIf="carregandoSaldo" class="mini-loader"></div>
-      <div *ngIf="!carregandoSaldo" class="valor-saldo">{{ saldoAtual ? saldoAtual.toFixed(8) : '0.00000000' }} BTC</div>
+      <div *ngIf="!carregandoSaldo" class="valor-saldo">{{ formatBtcValue(saldo) }} BTC</div>
     </div>
     
     <div class="info-box">
@@ -146,13 +146,13 @@
           </thead>
           <tbody>
             <tr *ngFor="let utxo of utxos">
-              <td class="txid-col">{{ utxo.txid.substring(0, 10) }}...</td>
-              <td>{{ utxo.vout }}</td>
-              <td>{{ utxo.amount.toFixed(8) }} BTC</td>
-              <td>{{ utxo.confirmations }}</td>
+              <td class="txid-col">{{ utxo?.txid ? utxo.txid.substring(0, 10) + '...' : 'N/A' }}</td>
+              <td>{{ utxo?.vout !== undefined ? utxo.vout : 'N/A' }}</td>
+              <td>{{ formatBtcValue(utxo?.amount) }} BTC</td>
+              <td>{{ utxo?.confirmations !== undefined ? utxo.confirmations : '0' }}</td>
               <td>
-                <span [ngClass]="utxo.spendable ? 'status-disponivel' : 'status-indisponivel'">
-                  {{ utxo.spendable ? 'Sim' : 'Não' }}
+                <span [ngClass]="utxo?.spendable ? 'status-disponivel' : 'status-indisponivel'">
+                  {{ utxo?.spendable ? 'Sim' : 'Não' }}
                 </span>
               </td>
             </tr>

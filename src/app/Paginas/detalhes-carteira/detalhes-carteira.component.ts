@@ -54,7 +54,8 @@ export class DetalhesCarteiraComponent implements OnInit {
         this.carteira = data;
         this.carregandoCarteira = false;
         
-        this.nomeCarteira = data.name;
+        // Use name property if available, or fallback to address
+        this.nomeCarteira = data.name || data.tipo || 'Carteira ' + data.address.substring(0, 8);
         this.endereco = data.address;
         
         this.carregarTransacoes(address);
@@ -83,9 +84,27 @@ export class DetalhesCarteiraComponent implements OnInit {
   }
   
   carregarUTXOs(address: string): void {
+    console.log('Carregando UTXOs para endereço:', address);
     this.walletService.getUtxos(address).subscribe({
       next: (data) => {
-        this.utxos = data;
+        console.log('Dados de UTXOs recebidos:', data);
+        
+        let utxoArray: any[] = [];
+        
+        if (Array.isArray(data)) {
+          utxoArray = data;
+        } else if (data && typeof data === 'object') {
+          // Type assertion to access potential properties
+          const dataObj = data as Record<string, any>;
+          if (Array.isArray(dataObj['utxos'])) {
+            utxoArray = dataObj['utxos'];
+          } else if (Array.isArray(dataObj['result'])) {
+            utxoArray = dataObj['result'];
+          }
+        }
+        
+        // Use our common helper method to process UTXOs
+        this.processUTXOs(utxoArray);
         this.carregandoUTXOs = false;
       },
       error: (err) => {
@@ -96,12 +115,38 @@ export class DetalhesCarteiraComponent implements OnInit {
   }
   
   carregarSaldo(address: string): void {
+    console.log('Carregando saldo para endereço:', address);
     this.walletService.getBalance(address).subscribe({
       next: (data) => {
-        if (data && data.confirmed) {
-          this.saldoAtual = data.confirmed;
-          this.saldo = data.confirmed; 
+        console.log('Dados de saldo recebidos:', data);
+        let confirmedBalance = 0;
+        
+        if (data) {
+          if (typeof data === 'number') {
+            confirmedBalance = data;
+          } else if (typeof data === 'object') {
+            if (typeof data.confirmed === 'number') {
+              confirmedBalance = data.confirmed;
+            } else if (typeof data.balance === 'number') {
+              confirmedBalance = data.balance;
+            } else if (typeof data.result === 'number') {
+              confirmedBalance = data.result;
+            }
+            
+            if (Array.isArray(data.utxos) && data.utxos.length > 0) {
+              console.log('UTXOs encontrados na resposta de saldo:', data.utxos);
+              this.processUTXOs(data.utxos);
+              this.carregandoUTXOs = false; // No need to make a separate call for UTXOs
+            }
+          }
         }
+        
+        const balanceBTC = confirmedBalance / 100000000;
+        this.saldoAtual = balanceBTC;
+        this.saldo = balanceBTC;
+        console.log('Saldo em satoshis:', confirmedBalance);
+        console.log('Saldo convertido para BTC:', balanceBTC);
+        
         this.carregandoSaldo = false;
       },
       error: (err) => {
@@ -109,6 +154,45 @@ export class DetalhesCarteiraComponent implements OnInit {
         this.carregandoSaldo = false;
       }
     });
+  }
+  
+  private processUTXOs(utxoArray: any[]): void {
+    if (utxoArray && utxoArray.length > 0) {
+      this.utxos = utxoArray.map(utxo => {
+        const processedUtxo: any = { ...utxo };
+        
+        if (!processedUtxo.txid && processedUtxo.tx_hash) {
+          processedUtxo.txid = processedUtxo.tx_hash;
+        }
+        
+        if (typeof processedUtxo.vout !== 'number' && typeof processedUtxo.output_index === 'number') {
+          processedUtxo.vout = processedUtxo.output_index;
+        }
+        
+        if (typeof processedUtxo.amount === 'number') {
+          processedUtxo.amount = processedUtxo.amount / 100000000;
+        } else if (typeof processedUtxo.value === 'number') {
+          processedUtxo.amount = processedUtxo.value / 100000000;
+        } else {
+          processedUtxo.amount = 0;
+        }
+        
+        if (typeof processedUtxo.confirmations !== 'number') {
+          processedUtxo.confirmations = 0;
+        }
+        
+        if (typeof processedUtxo.spendable !== 'boolean') {
+          processedUtxo.spendable = processedUtxo.confirmations > 0;
+        }
+        
+        return processedUtxo;
+      });
+      
+      console.log('UTXOs processados:', this.utxos);
+    } else {
+      this.utxos = [];
+      console.log('UTXOs não disponíveis ou formato inválido, definido como array vazio');
+    }
   }
   
   voltarParaCarteiras(): void {
@@ -119,6 +203,13 @@ export class DetalhesCarteiraComponent implements OnInit {
     if (this.carteira) {
       this.router.navigate(['/exportar-carteira'], { queryParams: { address: this.carteira.address } });
     }
+  }
+  
+  formatBtcValue(satoshis: number | undefined | null): string {
+    if (satoshis === undefined || satoshis === null || isNaN(satoshis)) {
+      return '0.00000000';
+    }
+    return satoshis.toFixed(8);
   }
   
   /**

@@ -70,8 +70,12 @@ export class PainelComponent implements OnInit {
         
         this.walletService.getBalance(wallet.address).subscribe({
           next: (data) => {
-            if (data && data.confirmed) {
-              this.totalBalance += data.confirmed;
+            if (data) {
+              const confirmedBalance = data.balance || data.confirmed || 0;
+              const unconfirmedBalance = data.unconfirmed || 0;
+              // Soma em satoshis - não converte para BTC ainda
+              this.totalBalance += confirmedBalance + unconfirmedBalance;
+              console.log(`Wallet ${wallet.address} balance: confirmed=${confirmedBalance}, unconfirmed=${unconfirmedBalance}, total=${this.totalBalance}`);
             }
           },
           error: (err) => {
@@ -80,5 +84,15 @@ export class PainelComponent implements OnInit {
         });
       }
     });
+  }
+  
+  // Helper method to safely format BTC values
+  formatBtcValue(satoshis: number): string {
+    if (satoshis === undefined || satoshis === null || isNaN(satoshis)) {
+      return '0.00000000';
+    }
+    // Convert from satoshis to BTC
+    const btcValue = satoshis / 100000000;
+    return btcValue.toFixed(8);
   }
 }

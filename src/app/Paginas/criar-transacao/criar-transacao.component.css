@@ -40,6 +40,83 @@ app-header {
   margin-top: 2rem;
 }
 
+.formulario label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: 500;
+  color: #4a4a4a;
+}
+
+.formulario input[type="text"],
+.formulario input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.error-message {
+  color: #e74c3c;
+  background-color: #fdeded;
+  border-left: 4px solid #e74c3c;
+  padding: 12px;
+  margin: 15px 0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.botoes {
+  margin-top: 30px;
+  display: flex;
+  gap: 15px;
+}
+
+.btn-cancelar,
+.btn-enviar {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-cancelar {
+  background-color: #f0f0f0;
+  color: #555;
+}
+
+.btn-enviar {
+  background-color: #3498db;
+  color: white;
+}
+
+.btn-cancelar:hover {
+  background-color: #e0e0e0;
+}
+
+.btn-enviar:hover {
+  background-color: #2980b9;
+}
+
+.btn-cancelar:disabled,
+.btn-enviar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.taxas {
+  margin: 10px 0;
+}
+
+.taxas label {
+  display: block;
+  margin: 8px 0;
+  font-weight: normal;
+}
+
 label {
   display: block;
   font-weight: bold;
