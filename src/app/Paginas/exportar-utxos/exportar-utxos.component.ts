@@ -15,10 +15,9 @@ export class ExportarUtxosComponent {
 
   exportar(tipo: 'csv' | 'json') {
     console.log(`Exportando como: ${tipo.toUpperCase()}`);
-    // aqui você pode chamar a lógica de exportação ou serviço
   }
 
   cancelar() {
-    this.router.navigate(['/utxos']); // redireciona para a tela anterior
+    this.router.navigate(['/utxos']); 
   }
 }

@@ -15,6 +15,5 @@ export class ImportarCarteiraComponent {
 
   importarCarteira() {
     console.log('Chave importada:', this.chavePrivada);
-    // Aqui você pode acionar serviço para processar a importação
   }
 }

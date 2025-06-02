@@ -49,7 +49,6 @@ export class ExportarTransacoesComponent {
 
   exportarExcel(data: any[]) {
     alert('Exportação para Excel ainda não implementada.');
-    // Para exportar em .xlsx você pode usar a biblioteca xlsx (se quiser posso incluir).
   }
 
   downloadArquivo(conteudo: string, nome: string, tipo: string) {

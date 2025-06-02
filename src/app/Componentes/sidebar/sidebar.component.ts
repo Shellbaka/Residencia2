@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -22,10 +22,24 @@ export class SidebarComponent {
     { name: 'Configurações', route: '/configuracoes' }
   ];
 
-  constructor(private router: Router) {}
+  selectedRoute: string = '/';
+
+  constructor(private router: Router) {
+    this.selectedRoute = this.router.url;
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.selectedRoute = event.urlAfterRedirects;
+      }
+    });
+  }
 
   selectItem(item: any) {
     this.selected.emit(item.name);
+    this.selectedRoute = item.route;
     this.router.navigate([item.route]);
+  }
+
+  isActive(route: string): boolean {
+    return this.selectedRoute === route || this.selectedRoute.startsWith(route + '/');
   }
 }
