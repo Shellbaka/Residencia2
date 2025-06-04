@@ -49,10 +49,43 @@
         <label>Chave Pública</label>
         <div class="input-group">
           <input #publicKeyInput type="text" [value]="carteira.public_key" readonly>
+        </div>
+      </div>
+
+      <div class="campo-info">
+        <label>Chave Privada</label>
+        <div class="input-group">
+          <input #privateKeyInput 
+                 [type]="showPrivateKey ? 'text' : 'password'" 
+                 [value]="carteira.private_key" 
+                 readonly>
+          <button type="button" 
+                  class="btn-toggle-visibility" 
+                  (click)="showPrivateKey = !showPrivateKey"
+                  [title]="showPrivateKey ? 'Ocultar chave privada' : 'Mostrar chave privada'">
+            <i class="bi" [class.bi-eye]="!showPrivateKey" [class.bi-eye-slash]="showPrivateKey"></i>
+          </button>
+          <button class="btn-copiar" (click)="copiarTexto(privateKeyInput)">
+            <i class="bi bi-clipboard"></i>
+          </button>
           <button class="btn-copiar" (click)="copiarTexto(publicKeyInput)">
             <i class="bi bi-clipboard"></i>
           </button>
         </div>
+      </div>
+
+      <div class="campo-info" *ngIf="carteira.private_key">
+        <label>Chave Privada (WIF)</label>
+        <div class="input-group">
+          <input #privateKeyInput type="password" [value]="carteira.private_key" readonly>
+          <button class="btn-copiar" (click)="copiarTexto(privateKeyInput)">
+            <i class="bi bi-clipboard"></i>
+          </button>
+          <button class="btn-visibilidade" (click)="togglePrivateKeyVisibility(privateKeyInput)">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
+        <small class="warning-text">Mantenha sua chave privada em segredo. Qualquer pessoa com acesso a ela pode controlar seus fundos.</small>
       </div>
 
       <div class="campo-info">

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, timer } from 'rxjs';
 import { catchError, retry, tap, switchMap } from 'rxjs/operators';
 
 export interface Wallet {
@@ -58,58 +58,117 @@ export class WalletService {
     amount: number; 
     feeRate: number;
   }): Observable<any> {
-    console.log('Tentando criar transação diretamente com endereço de origem');
+    const fromAddress = transactionData.fromAddress;
+    const startTime = performance.now();
     
-    const directTxRequest = {
-      from_address: transactionData.fromAddress,
+    console.log(`[TX_CREATE] Iniciando transação de ${fromAddress} para ${transactionData.toAddress}`);
+    
+    const txRequest = {
+      from_address: fromAddress,
       outputs: [{
         address: transactionData.toAddress,
-        value: Math.floor(transactionData.amount)
+        value: Math.floor(transactionData.amount) 
       }],
       fee_rate: transactionData.feeRate
     };
     
-    console.log('Requisição direta para tx/build:', directTxRequest);
+    console.log('[TX_CREATE] Requisição formatada para tx/build:', txRequest);
     
-    return this.http.post(`${this.apiUrl}/tx/build`, directTxRequest).pipe(
-      catchError(error => {
-        console.log('Erro na criação direta de transação, tentando com UTXOs:', error);
+    const httpOptions = {
+      headers: { 'Content-Type': 'application/json' },
+      timeout: 30000
+    };
+    
+    return this.http.post(`${this.apiUrl}/tx/build`, txRequest, httpOptions).pipe(
+      tap((buildResponse: any) => {
+        const buildTime = ((performance.now() - startTime) / 1000).toFixed(3);
+        console.log(`[TX_CREATE] Transação construída em ${buildTime}s:`, buildResponse);
         
-        return this.getUtxos(transactionData.fromAddress).pipe(
-          switchMap((utxos: any[]) => {
-            console.log('UTXOs disponíveis:', utxos);
-            
-            if (!utxos || utxos.length === 0) {
-              throw new Error('Não há UTXOs disponíveis para esta carteira');
-            }
-            
-            const inputs = utxos.map(utxo => ({
-              txid: utxo.txid,
-              vout: utxo.vout,
-              value: parseInt(utxo.amount), 
-              address: transactionData.fromAddress
-            }));
-            
-            const txRequest = {
-              inputs: inputs,
-              outputs: [{
-                address: transactionData.toAddress,
-                value: Math.floor(transactionData.amount) 
-              }],
-              fee_rate: transactionData.feeRate
-            };
-            
-            console.log('Requisição formatada para tx/build:', txRequest);
-            
-            return this.http.post(`${this.apiUrl}/tx/build`, txRequest);
+        if (!buildResponse.raw_transaction) {
+          throw new Error('A resposta do servidor não contém o campo raw_transaction necessário para broadcast');
+        }
+      }),
+      switchMap((buildResponse: any) => {
+        console.log('[TX_CREATE] Iniciando broadcast da transação...');
+        return this.broadcastTransaction(buildResponse.raw_transaction).pipe(
+          tap(broadcastResponse => {
+            broadcastResponse.original_txid = buildResponse.txid;
+            broadcastResponse.original_raw_tx = buildResponse.raw_transaction;
           })
         );
       }),
-      tap((response: any) => {
-        console.log('Transaction creation response:', response);
+      tap((broadcastResponse: any) => {
+        const totalTime = ((performance.now() - startTime) / 1000).toFixed(3);
+        console.log(`[TX_CREATE] Fluxo completo da transação concluído em ${totalTime}s:`, broadcastResponse);
       }),
-      retry(1),
-      catchError(this.handleError)
+      retry({ count: 2, delay: (error, retryCount) => {
+        const delay = Math.pow(2, retryCount) * 1000; 
+        console.log(`[TX_CREATE] Erro, tentando novamente em ${delay/1000}s (tentativa ${retryCount})`);
+        return timer(delay);
+      }}),
+      catchError((error) => {
+        console.error('[TX_CREATE] Erro fatal no fluxo da transação:', error);
+        return throwError(() => new Error(
+          `Erro ao processar transação: ${error.error?.detail || error.message || 'Erro desconhecido'}`
+        ));
+      })
+    );
+  }
+  
+  broadcastTransaction(txHex: string): Observable<any> {
+    console.log('[TX_BROADCAST] Preparando para transmitir transação...');
+    
+    if (!txHex || txHex.length < 20) {
+      console.error('[TX_BROADCAST] Hex de transação inválido:', txHex);
+      return throwError(() => new Error('Hex de transação inválido ou vazio'));
+    }
+    
+    const broadcastRequest = {
+      tx_hex: txHex
+    };
+    
+    const httpOptions = {
+      headers: { 'Content-Type': 'application/json' },
+      timeout: 45000
+    };
+    
+    return this.http.post(`${this.apiUrl}/broadcast`, broadcastRequest, httpOptions).pipe(
+      tap((response: any) => {
+        console.log('[TX_BROADCAST] Resposta do broadcast:', response);
+        
+        if (response.txid) {
+          console.log(`[TX_BROADCAST] Transação transmitida com sucesso: ${response.txid}`);
+          if (response.explorer_url) {
+            console.log(`[TX_BROADCAST] Link para explorador: ${response.explorer_url}`);
+          }
+        }
+      }),
+      retry({ count: 2, delay: (error, retryCount) => {
+        if (error.status === 400) {
+          console.error('[TX_BROADCAST] Erro 400, não tentando novamente:', error);
+          return throwError(() => error);
+        }
+        
+        const delay = Math.pow(2, retryCount) * 2000; 
+        console.log(`[TX_BROADCAST] Erro, tentando novamente em ${delay/1000}s (tentativa ${retryCount})`);
+        return timer(delay);
+      }}),
+      catchError((error: HttpErrorResponse) => {
+        console.error('[TX_BROADCAST] Erro no broadcast:', error);
+        
+        let errorMsg = 'Erro ao transmitir transação';
+        if (error.error?.detail) {
+          errorMsg += `: ${error.error.detail}`;
+        } else if (error.message) {
+          errorMsg += `: ${error.message}`;
+        }
+        
+        if (error.status === 0) {
+          errorMsg += ' - Erro de conexão ou timeout';
+        }
+        
+        return throwError(() => new Error(errorMsg));
+      })
     );
   }
 

@@ -28,6 +28,7 @@ export class DetalhesCarteiraComponent implements OnInit {
   carregandoUTXOs = true;
   carregandoSaldo = true;
   erro = '';
+  showPrivateKey = false;
   
   constructor(
     private route: ActivatedRoute,
@@ -215,11 +216,36 @@ export class DetalhesCarteiraComponent implements OnInit {
   /**
    * @param inputElement O elemento input que contém o texto a ser copiado
    */
-  copiarTexto(inputElement: HTMLInputElement): void {
-    if (inputElement) {
-      inputElement.select();
-      document.execCommand('copy');
-      alert('Copiado para a área de transferência!');
+  copiarTexto(input: HTMLInputElement): void {
+    input.select();
+    this.document.execCommand('copy');
+    input.setSelectionRange(0, 0);
+    
+    // Mostrar notificação de cópia
+    const tooltip = document.createElement('div');
+    tooltip.textContent = 'Copiado!';
+    tooltip.className = 'copied-tooltip';
+    input.parentNode?.appendChild(tooltip);
+    
+    setTimeout(() => {
+      tooltip.remove();
+    }, 2000);
+  }
+
+  togglePrivateKeyVisibility(input: HTMLInputElement): void {
+    const icon = input.nextElementSibling?.nextElementSibling?.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      if (icon) {
+        icon.classList.remove('bi-eye');
+        icon.classList.add('bi-eye-slash');
+      }
+    } else {
+      input.type = 'password';
+      if (icon) {
+        icon.classList.remove('bi-eye-slash');
+        icon.classList.add('bi-eye');
+      }
     }
   }
 }
