@@ -16,16 +16,16 @@ import { FormsModule } from '@angular/forms';
 export class ExportarCarteiraComponent implements OnInit {
   errorMessage: string = '';
   hasValidWallet: boolean = false;
-  chaveExportada: string = ''; 
-  outputPath: string = ''; 
-  method: string = 'entropy';
-
   privateKey: string = '';
   publicKey: string = '';
   address: string = '';
+  method: string = 'entropy';
   network: string = 'testnet';
   keyFormat: string = 'p2pkh';
   fileFormat: string = 'txt';
+  exportPath: string = '';
+  exportError: string = '';
+  exporting: boolean = false;
 
   constructor(private http: HttpClient, private router: Router) {
     const nav = this.router.getCurrentNavigation();
@@ -34,6 +34,7 @@ export class ExportarCarteiraComponent implements OnInit {
       this.privateKey = walletData.private_key;
       this.publicKey = walletData.public_key;
       this.address = walletData.address;
+      this.method = walletData.key_generation_method || walletData.method || 'entropy';
       this.network = walletData.network || this.network;
       this.keyFormat = walletData.key_format || this.keyFormat;
       this.hasValidWallet = true;
@@ -42,47 +43,63 @@ export class ExportarCarteiraComponent implements OnInit {
     }
   }
   
-  ngOnInit() {
+  async ngOnInit() {
     if (!this.hasValidWallet) {
       this.router.navigate(['/criar-carteira']);
+      return;
+    }
+    
+    await this.exportarChave();
+  }
+
+  getMethodDisplayName(method: string): string {
+    const methodMap: {[key: string]: string} = {
+      'entropy': 'Entropia (Padrão)',
+      'bip39': 'BIP39 (Frase Mnemônica)',
+      'bip32': 'BIP32 (Derivação de Chave)',
+    };
+    return methodMap[method] || method.toUpperCase();
+  }
+
+  async copiarExportPath() {
+    try {
+      await navigator.clipboard.writeText(this.exportPath);
+    } catch (err) {
+      console.error('Erro ao copiar o caminho:', err);
     }
   }
 
-  exportarChave() {
-    const payload = {
-      private_key: this.privateKey,
-      public_key: this.publicKey,
-      address: this.address,
-      network: this.network,
-      format: this.keyFormat,
-      file_format: this.fileFormat
-    };
+  async exportarChave() {
+    if (!this.hasValidWallet) return;
 
-    this.http.post<any>('http://127.0.0.1:8000/api/keys/export-file', payload, { observe: 'response' })
-      .subscribe({
-        next: (response) => {
-          if (response.status === 200 && response.body?.file_path) {
-            this.errorMessage = '';
-            this.chaveExportada = `Arquivo salvo em: ${response.body.file_path}`;
-          } else {
-            this.errorMessage = `Exportação concluída com status ${response.status}.`;
-          }
-        },
-        error: (error) => {
-          console.error('Erro ao exportar chave:', error);
-          if (error.status === 422) {
-            this.errorMessage = 'Erro ao exportar: dados inválidos ou falha na exportação.';
-          } else {
-            this.errorMessage = 'Erro inesperado ao exportar a chave. Tente novamente.';
-          }
-        }
-      });
-  }
+    this.exporting = true;
+    this.exportError = '';
+    
+    try {
+      const payload = {
+        private_key: this.privateKey,
+        public_key: this.publicKey,
+        address: this.address,
+        format: this.keyFormat,
+        network: this.network,
+        method: this.method,
+        file_format: this.fileFormat
+      };
 
-  copiarChave() {
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText(this.chaveExportada);
-      this.errorMessage = 'Chave copiada!';
+      const response: any = await this.http.post('http://localhost:8000/api/keys/export-file', payload, { observe: 'response' }).toPromise();
+      
+      if (response.status === 200 && response.body?.file_path) {
+        this.exportPath = response.body.file_path;
+      } else {
+        throw new Error(`Exportação concluída com status ${response.status}.`);
+      }
+    } catch (error: any) {
+      console.error('Erro ao exportar carteira:', error);
+      this.exportError = error.status === 422 
+        ? 'Erro ao exportar: dados inválidos ou falha na exportação.'
+        : 'Erro inesperado ao exportar a carteira. Tente novamente.';
+    } finally {
+      this.exporting = false;
     }
   }
   

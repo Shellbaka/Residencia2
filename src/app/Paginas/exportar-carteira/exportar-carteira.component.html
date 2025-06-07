@@ -1,67 +1,45 @@
 <app-header [title]="'Exportar Carteira'"></app-header>
 <app-sidebar></app-sidebar>
 
-<div class="content">
-  <h2>Exportar Carteira</h2>
-  
-  <div *ngIf="errorMessage" class="error-message">
-    {{ errorMessage }}
+<div class="container">
+  <div *ngIf="!hasValidWallet" class="error-message">
+    <p>{{ errorMessage || 'Nenhuma carteira disponível para exportar' }}</p>
+    <button class="btn-voltar" (click)="voltar()">
+      <i class="bi bi-arrow-left"></i> Voltar
+    </button>
   </div>
 
-  <div class="info-box" *ngIf="hasValidWallet">
-    <h3>Informações da Carteira</h3>
-    
-    <div class="campo-info">
-      <label>Endereço</label>
-      <div class="input-group">
-        <input #enderecoInput type="text" [value]="address" readonly>
-        <button class="btn-copiar" (click)="copiarTexto(enderecoInput)">
+  <div *ngIf="exporting" class="exporting-message">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Exportando...</span>
+    </div>
+    <p>Exportando carteira, aguarde...</p>
+  </div>
+
+  <div *ngIf="exportPath" class="export-success">
+    <div class="success-icon">
+      <i class="bi bi-check-circle"></i>
+    </div>
+    <h3>Carteira Exportada com Sucesso!</h3>
+    <div class="export-path">
+      <p>Arquivo salvo em:</p>
+      <div class="path-display">
+        <code>{{ exportPath }}</code>
+        <button class="btn-copiar" (click)="copiarExportPath()">
           <i class="bi bi-clipboard"></i>
         </button>
       </div>
     </div>
-
-    <div class="campo-info">
-      <label>Chave Pública</label>
-      <div class="input-group">
-        <input #publicKeyInput type="text" [value]="publicKey" readonly>
-        <button class="btn-copiar" (click)="copiarTexto(publicKeyInput)">
-          <i class="bi bi-clipboard"></i>
-        </button>
-      </div>
-    </div>
+    <button class="btn-voltar" (click)="voltar()">
+      <i class="bi bi-arrow-left"></i> Voltar
+    </button>
   </div>
 
-  <label>Método:</label>
-  <select [(ngModel)]="method">
-    <option value="entropy">Entropy</option>
-    <option value="bip39">BIP39</option>
-    <option value="bip32">BIP32</option>
-  </select>
-
-  <label>Rede:</label>
-  <select [(ngModel)]="network">
-    <option value="testnet">Testnet</option>
-    <option value="mainnet">Mainnet</option>
-  </select>
-
-  <label>Formato da Chave:</label>
-  <select [(ngModel)]="keyFormat">
-    <option value="p2pkh">P2PKH</option>
-    <option value="p2sh">P2SH</option>
-    <option value="p2wpkh">P2WPKH</option>
-    <option value="p2tr">P2TR</option>
-  </select>
-
-  <label>Nome do Arquivo de Exportação:</label>
-  <input type="text" [(ngModel)]="outputPath" placeholder="backup_carteira.txt">
-
-  <button (click)="exportarChave()">Exportar</button>
-  <button (click)="voltar()">Voltar</button>
-
-  <div *ngIf="chaveExportada">
-    <h3>Chave Exportada</h3>
-    <input type="text" [value]="chaveExportada" readonly>
-    <button (click)="copiarChave()">Copiar</button>
+  <div *ngIf="exportError" class="error-message">
+    <i class="bi bi-exclamation-triangle"></i>
+    <p>Erro ao exportar a carteira: {{ exportError }}</p>
+    <button class="btn-voltar" (click)="voltar()">
+      <i class="bi bi-arrow-left"></i> Voltar
+    </button>
   </div>
 </div>

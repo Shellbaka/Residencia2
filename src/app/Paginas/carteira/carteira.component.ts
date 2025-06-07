@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { SidebarComponent } from '../../Componentes/sidebar/sidebar.component';
 import { HeaderComponent } from '../../Componentes/header/header.component';
 import { WalletService, Wallet } from '../../Service/wallet.service';
@@ -17,7 +17,10 @@ export class CarteiraComponent implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private walletService: WalletService) {}
+  constructor(
+    private walletService: WalletService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.carregarCarteirasLocais();
@@ -49,5 +52,20 @@ export class CarteiraComponent implements OnInit {
         }
       });
     }
+  }
+
+  exportarCarteira(wallet: any): void {
+    this.router.navigate(['/exportar-carteira'], {
+      state: {
+        walletData: {
+          private_key: wallet.private_key,
+          public_key: wallet.public_key,
+          address: wallet.address,
+          network: wallet.network,
+          format: wallet.format,
+          method: wallet.method 
+        }
+      }
+    });
   }
 }

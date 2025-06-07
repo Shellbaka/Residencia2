@@ -202,7 +202,17 @@ export class DetalhesCarteiraComponent implements OnInit {
   
   exportarCarteira(): void {
     if (this.carteira) {
-      this.router.navigate(['/exportar-carteira'], { queryParams: { address: this.carteira.address } });
+      this.router.navigate(['/exportar-carteira'], { 
+        state: { 
+          walletData: {
+            private_key: this.carteira.private_key,
+            public_key: this.carteira.public_key,
+            address: this.carteira.address,
+            network: this.carteira.network,
+            key_format: this.carteira.format
+          } 
+        } 
+      });
     }
   }
   

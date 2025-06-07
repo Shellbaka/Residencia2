@@ -11,6 +11,7 @@ export interface Wallet {
   private_key?: string;
   public_key?: string;
   key_type?: string;
+  key_generation_method?: string; // 'entropy', 'bip39', or 'bip32'
   format?: string; 
   derivation_path?: string; 
   mnemonic?: string; 
@@ -48,9 +49,20 @@ export interface Transaction {
   providedIn: 'root'
 })
 export class WalletService {
-  private apiUrl = 'http://localhost:8000/api';
+  private fullApiUrl: string;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+    // Safely get the API URL from window object or use default
+    const apiUrl = typeof window !== 'undefined' ? 
+      (window as any).env?.API_URL || 'http://localhost:8000' : 
+      'http://localhost:8000';
+    
+    // Ensure the URL ends with a single slash
+    const baseUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
+    this.fullApiUrl = `${baseUrl}/api`;
+    
+    console.log('WalletService initialized with API URL:', this.fullApiUrl);
+  }
   
   createTransaction(transactionData: {
     fromAddress: string;
@@ -79,7 +91,7 @@ export class WalletService {
       timeout: 30000
     };
     
-    return this.http.post(`${this.apiUrl}/tx/build`, txRequest, httpOptions).pipe(
+    return this.http.post(`${this.fullApiUrl}/tx/build`, txRequest, httpOptions).pipe(
       tap((buildResponse: any) => {
         const buildTime = ((performance.now() - startTime) / 1000).toFixed(3);
         console.log(`[TX_CREATE] Transação construída em ${buildTime}s:`, buildResponse);
@@ -132,7 +144,7 @@ export class WalletService {
       timeout: 45000
     };
     
-    return this.http.post(`${this.apiUrl}/broadcast`, broadcastRequest, httpOptions).pipe(
+    return this.http.post(`${this.fullApiUrl}/broadcast`, broadcastRequest, httpOptions).pipe(
       tap((response: any) => {
         console.log('[TX_BROADCAST] Resposta do broadcast:', response);
         
@@ -173,7 +185,7 @@ export class WalletService {
   }
 
   getWallets(): Observable<Wallet[]> {
-    return this.http.get<Wallet[]>(`${this.apiUrl}/wallets`)
+    return this.http.get<Wallet[]>(`${this.fullApiUrl}/wallets`)
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -181,7 +193,7 @@ export class WalletService {
   }
 
   getWallet(address: string): Observable<Wallet> {
-    return this.http.get<Wallet>(`${this.apiUrl}/wallets/${address}`)
+    return this.http.get<Wallet>(`${this.fullApiUrl}/wallets/${address}`)
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -189,21 +201,21 @@ export class WalletService {
   }
 
   saveWallet(wallet: Wallet): Observable<Wallet> {
-    return this.http.post<Wallet>(`${this.apiUrl}/wallets`, wallet)
+    return this.http.post<Wallet>(`${this.fullApiUrl}/wallets`, wallet)
       .pipe(
         catchError(this.handleError)
       );
   }
 
   deleteWallet(address: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/wallets/${address}`)
+    return this.http.delete(`${this.fullApiUrl}/wallets/${address}`)
       .pipe(
         catchError(this.handleError)
       );
   }
 
   getTransactions(address: string): Observable<Transaction[]> {
-    return this.http.get<Transaction[]>(`${this.apiUrl}/wallets/${address}/transactions`)
+    return this.http.get<Transaction[]>(`${this.fullApiUrl}/wallets/${address}/transactions`)
       .pipe(
         retry(1),
         catchError(this.handleError)
@@ -211,8 +223,9 @@ export class WalletService {
   }
 
   getUtxos(address: string): Observable<UTXO[]> {
-    console.log(`Requesting UTXOs from: ${this.apiUrl}/wallets/${address}/utxos`);
-    return this.http.get<UTXO[]>(`${this.apiUrl}/wallets/${address}/utxos`)
+    console.log(`Requesting UTXOs for address: ${address}`);
+    console.log(`Full API URL: ${this.fullApiUrl}/wallets/${address}/utxos`);
+    return this.http.get<UTXO[]>(`${this.fullApiUrl}/wallets/${address}/utxos`)
       .pipe(
         tap((response: any) => {
           console.log('UTXO response:', response);
@@ -228,8 +241,8 @@ export class WalletService {
   }
 
   getBalance(address: string): Observable<any> {
-    console.log(`Requesting balance from: ${this.apiUrl}/balance/${address}`);
-    return this.http.get(`${this.apiUrl}/balance/${address}`)
+    console.log(`Requesting balance from: ${this.fullApiUrl}/balance/${address}`);
+    return this.http.get<any>(`${this.fullApiUrl}/balance/${address}`)
       .pipe(
         tap((response: any) => {
           console.log('Balance response:', response);
