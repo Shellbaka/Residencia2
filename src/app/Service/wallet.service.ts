@@ -52,15 +52,8 @@ export class WalletService {
   private fullApiUrl: string;
 
   constructor(private http: HttpClient) { 
-    // Safely get the API URL from window object or use default
-    const apiUrl = typeof window !== 'undefined' ? 
-      (window as any).env?.API_URL || 'http://localhost:8000' : 
-      'http://localhost:8000';
-    
-    // Ensure the URL ends with a single slash
-    const baseUrl = apiUrl.endsWith('/') ? apiUrl.slice(0, -1) : apiUrl;
-    this.fullApiUrl = `${baseUrl}/api`;
-    
+    // Hardcoded API URL for development
+    this.fullApiUrl = 'http://localhost:8000/api';
     console.log('WalletService initialized with API URL:', this.fullApiUrl);
   }
   
